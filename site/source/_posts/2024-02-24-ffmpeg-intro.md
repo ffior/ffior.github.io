@@ -185,6 +185,21 @@ ffmpeg -i video.mp4 -i matte.mp4 -i background.mp4 -filter_complex '[1][0]scale2
 - -f 强制输出格式 例如mp3, wav等
 
   ```shell
+  # 将a.mp4转 a.mp3命令
+  ffmpeg -i input.mp4 -q:a 0 -map a output.mp3
+
+  # 指定比特率（128k / 192k / 320k）
+  ffmpeg -i input.mp4 -b:a 192k output.mp3
+
+  # 最高音质
+  ffmpeg -i input.mp4 -q:a 0 -map a output.mp3
+
+  # 批量转换（Linux/macOS）
+  for f in *.mp4; do ffmpeg -i "$f" -q:a 0 -map a "${f%.mp4}.mp3"; done
+
+  # 批量转换（Windows CMD）
+  for %f in (*.mp4) do ffmpeg -i "%f" -q:a 0 -map a "%~nf.mp3"
+
   # 将a.mp3转化程a.wav，设定抽样率为16000
   ffmpeg -i a.mp3 -ar 16000 -ac 1 a.wav
   
