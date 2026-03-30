@@ -411,6 +411,7 @@ ffmpeg -f rawvideo -pix_fmt yuv420p -s 640x480 -r 30 -i out.yuv -c:v libx264 -f 
 
 ## 6. 消音命令
 
+### 6.1 ffmpeg 消音
 #### 参数说明
 
 - -i 文件，input.mp3 为待处理源文件
@@ -425,6 +426,15 @@ ffmpeg -f rawvideo -pix_fmt yuv420p -s 640x480 -r 30 -i out.yuv -c:v libx264 -f 
   # ffmpeg -i ad.mp4 -af "volume=enable='between(t,2,9)':volume=0,volume=enable='between(t,15,20)':volume=0" adb.mp4
   ffmpeg -i ad.mp4 -af "volume=enable='between(t,2,9)':volume=0" adb.mp4
   ```
+
+### 6.2 spleeter 消音
+
+- pretrained_models 预训练模型，2stems 表示将音频分为伴奏和人声， 4stems 表示将音频分为四种乐器和人声，5stems 表示将音频分为五种乐器和人声。
+- 预训练模型放在当前目录下，或者在环境变量中指定路径
+
+``` shell
+spleeter separate -p spleeter:4stems -o ./ -f "{instrument}.mp3" "未曾.mp3"
+```
 
 ## 7. 录制命令
 
