@@ -9,24 +9,24 @@
   },
   "dependencies": {
     "classnames": "^2.5.1",
-    "dayjs": "^1.11.10",
-    "react": "^18.2.0",
+    "dayjs": "^1.11.21",
+    "react": "^18.3.1",
     "rspress": "1.11.2"
   },
   "devDependencies": {
-    "@rspress/shared": "1.11.2",
-    "@types/node": "^16",
-    "@types/react": "^18.2.37",
-    "@typescript-eslint/eslint-plugin": "^6.12.0",
-    "@typescript-eslint/parser": "^6.12.0",
-    "eslint": "^8.54.0",
-    "eslint-plugin-mdx": "^2.2.0",
-    "eslint-plugin-react": "^7.33.2",
-    "prettier": "^3.1.0",
-    "tailwindcss": "^3.4.0",
+    "@fifo/rspress-plugin-markdown-presets": "workspace:*",
     "@fifo/rspress-plugin-post-resolver": "workspace:*",
     "@fifo/rspress-plugin-reading-info": "workspace:*",
     "@fifo/rspress-theme-default": "workspace:*",
-    "@fifo/rspress-plugin-markdown-presets": "workspace:*"
+    "@rspress/shared": "1.11.2",
+    "@types/node": "^16.18.126",
+    "@types/react": "^18.3.31",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0",
+    "eslint": "^8.57.1",
+    "eslint-plugin-mdx": "^2.3.4",
+    "eslint-plugin-react": "^7.37.5",
+    "prettier": "^3.8.4",
+    "tailwindcss": "^3.4.19"
   }
 }

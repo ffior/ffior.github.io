@@ -21,14 +21,14 @@
     "@modern-js/generator-utils": "3.3.8",
     "@modern-js/module-tools": "2.46.1",
     "@modern-js/monorepo-tools": "2.46.1",
-    "@modern-js/plugin-tailwindcss": "^2.46.1",
+    "@modern-js/plugin-tailwindcss": "^2.70.4",
     "@modern-js/tsconfig": "2.46.1",
     "cross-env": "^7.0.3",
-    "husky": "^8.0.0",
+    "husky": "^8.0.3",
     "nx": "17.0.2",
-    "prettier": "~2.8.1",
+    "prettier": "~2.8.8",
     "rimraf": "~3.0.2",
-    "tailwindcss": "^3.4.0",
+    "tailwindcss": "^3.4.19",
     "typescript": "~5.0.4"
   },
   "publishConfig": {

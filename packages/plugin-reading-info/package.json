@@ -14,7 +14,7 @@
     "@rspress/shared": "1.11.2"
   },
   "devDependencies": {
-    "@types/node": "~16.11.7"
+    "@types/node": "~16.11.68"
   },
   "sideEffects": [],
   "publishConfig": {

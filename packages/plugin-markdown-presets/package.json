@@ -15,7 +15,7 @@
     "parse5": "^6.0.1"
   },
   "dependencies": {
-    "@rspress/plugin-shiki": "^1.11.2",
+    "@rspress/plugin-shiki": "^1.47.1",
     "@rspress/shared": "1.11.2",
     "rehype-katex": "^6.0.3",
     "rehype-raw": "^6.1.1",
@@ -23,7 +23,7 @@
     "remark-math": "^5.1.1"
   },
   "devDependencies": {
-    "@types/node": "~16.11.7"
+    "@types/node": "~16.11.68"
   },
   "eslintIgnore": [
     "node_modules/",

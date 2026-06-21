@@ -3,7 +3,7 @@ layout: post
 title: ffmpeg 是一个命令行音视频后期处理软件
 date: 2024-02-24 16:30:00
 categories: [音视频]
-tags: [ffmpeg, ffplay]
+tags: [ffmpeg, ffplay, rubberband]
 ---
 
 ## ffmpeg 是一个命令行音视频后期处理软件
@@ -26,7 +26,7 @@ tags: [ffmpeg, ffplay]
 
 #### 参数说明
 
-- \-i  input\_file：指定输入文件的路径和名称。示例：-i  input.mp3
+- \-i input_file：指定输入文件的路径和名称。示例：-i input.mp3
 
 - \-ss position：指定从输入文件的哪个时间位置开始处理，格式为 HH:MM:SS.xxx（小时:分钟:秒.毫秒）。示例：-ss 00:01:30.500 表示从 1 分 30.5 秒开始处理。
 
@@ -42,7 +42,7 @@ tags: [ffmpeg, ffplay]
   ffmpeg -i input.mp3 -ss 00:00:xx -t 120 -y output.mp3
   ffmpeg -i input.mp3 -ss 10 -t 230 output.mp3
   ffmpeg -i test.mp3 -ss 00:01:30 -to 00:02:30 -c copy test_cut.mp3
-  
+
   # 截取视频片段
   ffmpeg -i input.mp4 -ss 04:10 -t 16 -c copy -avoid_negative_ts make_zero output.mp4
   ```
@@ -86,7 +86,7 @@ tags: [ffmpeg, ffplay]
   # 将两个 mp4 文件合并
   ffmpeg -f concat -i input.txt -c copy output.mp4
   ffmpeg -f concat -safe 0 -i input.txt -c copy output-he.mp4
-  
+
   ## input.txt 中的内容
   file 'file1.mp4'
   file 'file2.mp4'
@@ -94,14 +94,14 @@ tags: [ffmpeg, ffplay]
 
 - contact 添加一段空白
   - 添加静音空白
-  如果你想要在视频的末尾添加一段静音，可以使用apad滤镜。例如，如果你想在视频末尾添加5秒的静音：
-  ``` shell
+    如果你想要在视频的末尾添加一段静音，可以使用apad滤镜。例如，如果你想在视频末尾添加5秒的静音：
+  ```shell
   ffmpeg -i input.mp4 -filter_complex "[0:a]apad=pad_dur=5[aout]" -map 0:v -map "[aout]" -c:v copy output.mp4
   # 这里，apad=pad_dur=5会在音频末尾添加5秒的静音。
   ```
   - 添加黑屏空白
-如果你想要在视频的末尾添加一段黑屏，可以使用loop滤镜来复制最后一帧，然后延长视频时长。例如，添加5秒的黑屏：
-  ``` shell
+    如果你想要在视频的末尾添加一段黑屏，可以使用loop滤镜来复制最后一帧，然后延长视频时长。例如，添加5秒的黑屏：
+  ```shell
   ffmpeg -i input.mp4 -filter:v "loop=loop=-1:size=1:start=0" -t 5 -c:a copy output.mp4
   # 这里，loop=loop=-1:size=1:start=0会复制视频的最后一帧并无限循环这个帧，然后使用-t 5来指定输出视频的总时长为5秒（包括原始视频长度和额外的5秒黑屏）。
   ```
@@ -146,7 +146,7 @@ ffmpeg -i audio-无声.mp4 -i accompaniment.wav -c:v copy -c:a aac -strict exper
 ffmpeg -i test.mp4 -filter_complex "[0:v]setpts=10/8*PTS[v];[0:a]atempo=0.8[a]" -map "[v]" -map "[a]" test-2.mp4
 ```
 
-这条指令同时调整视频倍速和音频倍速，setpts=(倍速的倒数)*PTS[v]，atempo=(倍速)[a]
+这条指令同时调整视频倍速和音频倍速，setpts=(倍速的倒数)\*PTS[v]，atempo=(倍速)[a]
 
 ### 2.6 添加水印
 
@@ -202,19 +202,19 @@ ffmpeg -i video.mp4 -i matte.mp4 -i background.mp4 -filter_complex '[1][0]scale2
 
   # 将a.mp3转化程a.wav，设定抽样率为16000
   ffmpeg -i a.mp3 -ar 16000 -ac 1 a.wav
-  
+
   # 将Frozen.mka转化成a.mp3
   ffmpeg -i Frozen.mka -ar 16000 -f mp3 a.mp3
-  
+
   # 将图片转为视频
   ffmpeg -loop 1 -f image2 -i test2.png -vcodec libx264 -r 30 -t 3 test2.mp4
-  
+
   # 替换视频中的音频轨
   ffmpeg -i input.mp4 -i trll.mp3 -map 0:v -map 1:a -c:v copy -shortest -y output.mp4
-  
+
   # 将wav文件转为mp3文件
   ffmpeg -i output.wav -c:a libmp3lame output.mp3
-  
+
   # 将mp3文件转为aac文件
   ffmpeg -i input.mp3 -acodec aac -strict experimental -y output.aac
   ```
@@ -239,15 +239,14 @@ ffmpeg -i input.bmp out.png
   ```shell
   # 音量256为原始音量，如果要调整到两倍音量，则设置为512，调整到一半音量，则设为128，下面为减小一半音量的命令
   ffmpeg -i input.mp3 -vol 128 output.mp3
-  
+
   # 使用dB调整音量
   ffmpeg -i input.mp3 -af volume=-20dB output.mp3
   ```
 
   **dB的换算公式**
-  1.1 dB = 1.1 倍，2 dB = 1.25倍，3 dB = 1.4倍，6 dB = 2 倍，10 dB = 3 倍，20 dB = 10 倍，30 dB = 30 倍。其它就可以用上述数值换算，并不困难。(反过来 – 6 dB 就是 1/2 = 0.5)
-  2.在换算时要把握一个原则，dB数值的相加 等于 倍数的相乘。
-  例如：40 dB = 20dB + 20 dB = 10 * 10 = 100 倍
+  1.1 dB = 1.1 倍，2 dB = 1.25倍，3 dB = 1.4倍，6 dB = 2 倍，10 dB = 3 倍，20 dB = 10 倍，30 dB = 30 倍。其它就可以用上述数值换算，并不困难。(反过来 – 6 dB 就是 1/2 = 0.5) 2.在换算时要把握一个原则，dB数值的相加 等于 倍数的相乘。
+  例如：40 dB = 20dB + 20 dB = 10 \* 10 = 100 倍
   -20dB谱宽就是信号衰减到十分之一时的频谱带宽。
 
 ### 4.2 升降调
@@ -261,6 +260,35 @@ ffmpeg -i "mine.mkv" -filter_complex "asetrate=48000*2^(2/12),atempo=1/2^(2/12)"
 ffmpeg -i "mine.mkv" -filter_complex "asetrate=48000*2^(-1/12),atempo=1/2^(-1/12)" "output.mkv"
 # 降全音
 ffmpeg -i "mine.mkv" -filter_complex "asetrate=48000*2^(-2/12),atempo=1/2^(-2/12)" "output.mkv"
+```
+
+```
+# 使用rubberband工具降调
+# macOS
+brew install rubberband
+
+# Ubuntu / Debian
+sudo apt install rubberband-cli
+
+# Windows
+# 去官网下载预编译二进制：https://breakfastquay.com/rubberband/
+
+pip install pyrubberband
+# pyrubberband 依赖 soundfile 和 numpy
+pip install soundfile numpy
+
+# 命令行用法
+# 降 2 个半音（-2 semitones）
+rubberband --pitch -2 input.mp3 output.mp3
+
+# 降 3 个半音，同时保持原速（默认就会保持速度，不像简单变速那样会变快/变慢）
+rubberband --pitch -3 input.wav output.wav
+
+# 升调
+rubberband --pitch 2 input.wav output.wav
+
+# 同时改变速度（变成 0.8 倍速，即变慢）
+rubberband --tempo 0.8 --pitch -2 input.wav output.wav
 ```
 
 ### 4.3 音频速率调整
@@ -292,7 +320,8 @@ ffmpeg -i input.mp3 -af "asetrate=44100*0.5,aresample=44100" output.mp3
 ```
 
 #### 参数说明
-- asetrate=44100*0.5：将采样率调整为原来的 50%。
+
+- asetrate=44100\*0.5：将采样率调整为原来的 50%。
 - aresample=44100：将采样率重新调整为 44100 Hz，以保持音质。
 
 如果你希望放慢音频速度的同时保持音高不变，可以使用 rubberband 滤镜（需要安装 librubberband）。
@@ -303,6 +332,7 @@ ffmpeg -i input.mp3 -af "rubberband=tempo=0.5" output.mp3
 ```
 
 #### 安装 librubberband：
+
 - macOS: brew install rubberband
 - Linux: sudo apt install rubberband-cli
 - Windows: 需要手动编译或使用预编译版本。
@@ -364,12 +394,12 @@ ffmpeg -f s16be -ar 8000 -ac 2 -acodec pcm_s16be -i input.raw output.wav
 ```
 
 **查看视频，包含的视频流、音频流如下：**
-encoder         : libebml v1.2.3 + libmatroska v1.3.0
+encoder : libebml v1.2.3 + libmatroska v1.3.0
 Duration: 01:42:13.09, start: 0.000000, bitrate: 2954 kb/s
 Stream #0:0: Video: h264 (High), yuv420p, 1024x576 [SAR 1:1 DAR 16:9], 23.98 fps
-Stream #0:1(eng): Audio: ac3, 48000 Hz, 384 kb/s (default)  title           : 英语
-Stream #0:2(chi): Audio: ac3, 48000 Hz, 384 kb/s                  title           : 台配
-Stream #0:3(chi): Audio: ac3, 48000 Hz, 384 kb/s                  title           : 粤语
+Stream #0:1(eng): Audio: ac3, 48000 Hz, 384 kb/s (default) title : 英语
+Stream #0:2(chi): Audio: ac3, 48000 Hz, 384 kb/s title : 台配
+Stream #0:3(chi): Audio: ac3, 48000 Hz, 384 kb/s title : 粤语
 
 **查看原音视频文件音轨频率**
 
@@ -412,6 +442,7 @@ ffmpeg -f rawvideo -pix_fmt yuv420p -s 640x480 -r 30 -i out.yuv -c:v libx264 -f 
 ## 6. 消音命令
 
 ### 6.1 ffmpeg 消音
+
 #### 参数说明
 
 - -i 文件，input.mp3 为待处理源文件
@@ -421,7 +452,7 @@ ffmpeg -f rawvideo -pix_fmt yuv420p -s 640x480 -r 30 -i out.yuv -c:v libx264 -f 
   ```shell
   ffmpeg -i input.mp3 -af pan="stereo|c0=c0|c1=-1*c1" -ac 1 output.mp3
   ffmpeg -i input.mp3 -af "pan=stereo|c0<c0+c1|c1<c0+c1" output.mp3
-  
+
   # 消除视频中部份声音
   # ffmpeg -i ad.mp4 -af "volume=enable='between(t,2,9)':volume=0,volume=enable='between(t,15,20)':volume=0" adb.mp4
   ffmpeg -i ad.mp4 -af "volume=enable='between(t,2,9)':volume=0" adb.mp4
@@ -432,7 +463,7 @@ ffmpeg -f rawvideo -pix_fmt yuv420p -s 640x480 -r 30 -i out.yuv -c:v libx264 -f 
 - pretrained_models 预训练模型，2stems 表示将音频分为伴奏和人声， 4stems 表示将音频分为四种乐器和人声，5stems 表示将音频分为五种乐器和人声。
 - 预训练模型放在当前目录下，或者在环境变量中指定路径
 
-``` shell
+```shell
 spleeter separate -p spleeter:4stems -o ./ -f "{instrument}.mp3" "未曾.mp3"
 ```
 
@@ -450,28 +481,28 @@ spleeter separate -p spleeter:4stems -o ./ -f "{instrument}.mp3" "未曾.mp3"
 
 - ":0" 参数表示默认的音频输入设备
 
-- "1:0" 参数表示"视频输入设备:音频输入设备" 
+- "1:0" 参数表示"视频输入设备:音频输入设备"
 
   ```shell
   # 查询录制设备
   ffmpeg -f avfoundation -list_devices true -i ""
-  
+
   # 录制音频
   ffmpeg -f avfoundation -i ":0" output.wav
-  
+
   # 录制音频裸数据
   ffmpeg -f avfoundation -i :0 -ar 44100 -f s16le out.pcm
-  
+
   # 录制视频
   ffmpeg -f avfoundation -i "1:0" out.avi
   ffmpeg -framerate 30 -f avfoundation -i 0 out.mp4
-  
+
   # 视频+音频
   ffmpeg -framerate 30 -f avfoundation -i 0:0 out.mp4
-  
+
   # 录屏
   ffmpeg -f avfoundation -i 1 -r 30 out.yuv
-  
+
   # 录屏+声音
   ffmpeg -f avfoundation -i 1:0 -r 29.97 -c:v libx264 -crf 0 -c:a libfdk_aac -profile:a aac_he_v2 -b:a 48k out.flv
   ```
@@ -635,7 +666,25 @@ ffmpeg -i video_test.mp4 -vf subtitles=subtitle.srt out_subtitle.mp4
 ffmpeg -i video_test.mp4 -i audio_bg.mp3 -vf subtitles=all_mp3_srt.srt out_mp3_subtitle.mp4
 ```
 
-### 8.9 添加thumbnail，文件管理时看到的封面
+### 8.9 提取字幕
+
+```
+pip install openai-whisper
+# 依赖 ffmpeg，需要单独安装
+brew install ffmpeg        # macOS
+sudo apt install ffmpeg    # Ubuntu
+
+# 自动检测语言，生成 srt/vtt/txt 等格式
+whisper input.mp3 --output_format srt
+
+# 指定中文，速度更快更准
+whisper input.mp3 --language zh --output_format srt
+
+# 指定模型大小（模型越大越准，但越慢）
+whisper input.mp3 --language zh --model large --output_format srt
+```
+
+### 8.10 添加thumbnail，文件管理时看到的封面
 
 - -vf 中的 subtitles指定字幕文件位置
 
@@ -644,7 +693,7 @@ ffmpeg -i video_test.mp4 -i audio_bg.mp3 -vf subtitles=all_mp3_srt.srt out_mp3_s
 ffmpeg -i output-he.mp4 -i zhifou.png -map 1 -map 0 -c copy -disposition:0 attached_pic output.mp4
 ```
 
-## 
+##
 
 ## 9. 下载命令
 
@@ -655,20 +704,20 @@ ffmpeg -i output-he.mp4 -i zhifou.png -map 1 -map 0 -c copy -disposition:0 attac
   ```shell
   # 将在线 flv 流保存到本地
   ffmpeg -i http://demo.com/input.flv -c copy dump.flv
-  
+
   # 将本地视频以 rtmp 协议推流
   ffmpeg -re -i ./demo.mp4 -c copy -f flv rtmp://publish.com/live/demo123456
-  
+
   # m3u8视频下载
   ffmpeg -protocol_whitelist concat,file,http,https,tcp,tls,crypto  -i  你的.m3u8 -c copy output.mp4
   ffmpeg -protocol_whitelist concat,file,http,https,tcp,tls,crypto  -i  https://xxx.m3u8 -c copy output.mp4
-  
+
   # 快手视频下载
   # 直接使用Downie4下载
-  
+
   # 优酷视频下载
   # 直接使用Downie4下载，或者找到网络请求里的mp4文件，用Downie4下载
-  
+
   ```
 
   ## 推荐
